@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  eval:
+    container_name: ATLAS-GRAND_CHALLENGE-evaluation
+    hostname: ATLAS-GRAND_CHALLENGE-evaluation
+    build:
+      context: ${PWD}
+      dockerfile: Dockerfile-eval
+    tty: true
+    stdin_open: true
+    volumes:
+      - ${PWD}:/workspace
+      - ${PWD}/../nnUNet:/nnUNet
+      - ${PWD}/../nnUNet2:/nnUNet2
+    environment:
+      - CHECK_CRC=False
+      # - MODEL_PREDICTION_DIR=union/union(3d,ensemble(3d,2d2)),1000ep,8vs2val
+      # - MODEL_PREDICTION_DIR=union/3d-2d0-2d1-2d2_1000EP_8vs2val
+      # - MODEL_PREDICTION_DIR=/nnUNet/ensemble/ensemble_3d-2d0-2d1_1000EP_8vs2val
+      # - MODEL_PREDICTION_DIR=/nnUNet/outputs/output_Task500_2d_ATLAS_ATLAS_1000EP_8:2val
+      # - MODEL_PREDICTION_DIR=/nnUNet/outputs/output_Task510_3d_fullres_ATLAS_ATLAS_1000EP
+      # - MODEL_PREDICTION_DIR=/nnUNet/outputs/output_Task562_3d_fullres_ATLAS_1000EP_BraTS_1000EP
+      # - MODEL_PREDICTION_DIR=/nnUNet2/outputs/output_Task501_ATLAS
+      # - MODEL_PREDICTION_DIR=union/Union(3d,Ensemble(3d,2d0))_1000ep_5Fold
+      # - MODEL_PREDICTION_DIR=outputsTs_DEBUG
+      - MODEL_PREDICTION_DIR=nnUNet_results/Task552_ATLAS_skullstripped
+    entrypoint: python3 convert_to_bids.py
+  
+  
+  union:
+    container_name: Union-Operation
+    build:
+      context: ${PWD}
+      dockerfile: Dockerfile
+    tty: true
+    stdin_open: true
+    volumes:
+      - ${PWD}:/workspace
+      - ${PWD}/../nnUNet:/nnUNet
+      - ${PWD}/../nnUNet2:/nnUNet2
+    environment:
+      # - A_PATH=/nnUNet/outputs/output_Task510_3d_fullres_ATLAS_ATLAS_1000EP_8:2val
+      # - B_PATH=union/2d0-2d1-2d2_1000EP_8vs2val
+      # - A_PATH=/nnUNet/outputs/output_Task501_2d_ATLAS_ATLAS_1000EP_8:2val
+      # - B_PATH=/nnUNet/outputs/output_Task502_2d_ATLAS_ATLAS_1000EP_8:2val
+      # - B_PATH=/nnUNet/ensemble/3d-2d0_1000EP_8:2val
+      # - B_PATH=/nnUNet//3d-2d2_1000EP_8vs2val
+      - A_PATH=/nnUNet/outputs/output_Task510_2d_ATLAS_ATLAS_1000EP_5Fold
+      - B_PATH=/nnUNet/ensemble/Ensemble(3d,2d0)_1000EP_5Fold
+      - DST_PATH=union/Union(3d,Ensemble(3d,2d0))_1000ep_5Fold
+      # - SAVE_ALSO_NPY=false
+      # - COPY_PKL=false
+    entrypoint: python3 union.py
