@@ -1,6 +1,5 @@
-scikit-learn==1.0.2
-numpy
-nibabel
 tqdm
+scikit-learn
+nibabel
 git+https://github.com/npnl/bidsio
-SimpleITK==2.1.1.2
+SimpleITK

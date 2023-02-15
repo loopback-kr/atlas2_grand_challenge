@@ -1,8 +1,9 @@
-FROM loopbackkr/pytorch:1.11.0-cuda11.3-cudnn8
+FROM loopbackkr/python
 
-COPY requirements.txt ${PWD}/
-RUN pip install --no-cache-dir -U pip &&\
-    pip install --no-cache-dir -r requirements.txt
+COPY requirements.txt ${PWD}
+RUN pip install --no-cache-dir -r requirements.txt &&\
+    rm requirements.txt
 
-COPY isles isles
-COPY *.py ${PWD}
+# Copy sources
+COPY isles ${PWD}/isles
+COPY *.py ${PWD}/
