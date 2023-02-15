@@ -1,6 +1,5 @@
 __pycache__/
 *.nii.gz
 *.zip
-*.json
 *.pkl
 *.npz
