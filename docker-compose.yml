@@ -2,55 +2,30 @@ version: '3.8'
 
 services:
   debug:
-    container_name: ATLAS-GRAND_CHALLENGE-debug
-    hostname: ATLAS-GRAND_CHALLENGE-debug
     build:
       context: ${PWD}
-      dockerfile: Dockerfile-eval
-    tty: true
-    stdin_open: true
-    volumes:
-      - ${PWD}:/workspace
-      - ${PWD}/../nnUNet_forked:/nnUNet
-    environment:
-      - CHECK_CRC=False
-      # - MODEL_PREDICTION_DIR=union/union(3d,ensemble(3d,2d2)),1000ep,8vs2val
-      # - MODEL_PREDICTION_DIR=union/3d-2d0-2d1-2d2_1000EP_8vs2val
-      # - MODEL_PREDICTION_DIR=/nnUNet/ensemble/ensemble_3d-2d0-2d1_1000EP_8vs2val
-      # - MODEL_PREDICTION_DIR=/nnUNet/outputs/output_Task500_2d_ATLAS_ATLAS_1000EP_8:2val
-      # - MODEL_PREDICTION_DIR=/nnUNet/outputs/output_Task510_3d_fullres_ATLAS_ATLAS_1000EP
-      # - MODEL_PREDICTION_DIR=/nnUNet/outputs/output_Task562_3d_fullres_ATLAS_1000EP_BraTS_1000EP
-      # - MODEL_PREDICTION_DIR=/nnUNet2/outputs/output_Task501_ATLAS
-      # - MODEL_PREDICTION_DIR=union/Union(3d,Ensemble(3d,2d0))_1000ep_5Fold
-      # - MODEL_PREDICTION_DIR=outputsTs_DEBUG
-      - MODEL_PREDICTION_DIR=nnUNet_results/Task552_ATLAS_skullstripped
-  
-  eval:
-    container_name: ATLAS-GRAND_CHALLENGE-evaluation
-    hostname: ATLAS-GRAND_CHALLENGE-evaluation
-    build:
-      context: ${PWD}
-      dockerfile: Dockerfile-eval
+      dockerfile: Dockerfile-bids
     tty: true
     stdin_open: true
     volumes:
       - ${PWD}:/workspace
       - ${PWD}/../nnUNet:/nnUNet
-      - ${PWD}/../nnUNet2:/nnUNet2
+      - ${PWD}/../nnUNet_forked:/nnUNet_forked
     environment:
       - CHECK_CRC=False
-      # - MODEL_PREDICTION_DIR=union/union(3d,ensemble(3d,2d2)),1000ep,8vs2val
-      # - MODEL_PREDICTION_DIR=union/3d-2d0-2d1-2d2_1000EP_8vs2val
-      # - MODEL_PREDICTION_DIR=/nnUNet/ensemble/ensemble_3d-2d0-2d1_1000EP_8vs2val
-      # - MODEL_PREDICTION_DIR=/nnUNet/outputs/output_Task500_2d_ATLAS_ATLAS_1000EP_8:2val
-      # - MODEL_PREDICTION_DIR=/nnUNet/outputs/output_Task510_3d_fullres_ATLAS_ATLAS_1000EP
-      # - MODEL_PREDICTION_DIR=/nnUNet/outputs/output_Task562_3d_fullres_ATLAS_1000EP_BraTS_1000EP
-      # - MODEL_PREDICTION_DIR=/nnUNet2/outputs/output_Task501_ATLAS
-      # - MODEL_PREDICTION_DIR=union/Union(3d,Ensemble(3d,2d0))_1000ep_5Fold
-      # - MODEL_PREDICTION_DIR=outputsTs_DEBUG
-      - MODEL_PREDICTION_DIR=nnUNet_results/Task552_ATLAS_skullstripped
-    entrypoint: python3 convert_to_bids.py
   
+  bids:
+    build:
+      context: ${PWD}
+      dockerfile: Dockerfile-bids
+    tty: true
+    stdin_open: true
+    volumes:
+      - ${PWD}:/workspace
+      - ${PWD}/../nnUNet:/nnUNet
+      - ${PWD}/../nnUNet_forked:/nnUNet_forked
+    environment:
+      - CHECK_CRC=False
   
   union:
     container_name: Union-Operation
@@ -62,7 +37,7 @@ services:
     volumes:
       - ${PWD}:/workspace
       - ${PWD}/../nnUNet:/nnUNet
-      - ${PWD}/../nnUNet2:/nnUNet2
+      - ${PWD}/../nnUNet_forked:/nnUNet_forked
     environment:
       # - A_PATH=/nnUNet/outputs/output_Task510_3d_fullres_ATLAS_ATLAS_1000EP_8:2val
       # - B_PATH=union/2d0-2d1-2d2_1000EP_8vs2val
