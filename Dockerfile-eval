@@ -1,9 +1,12 @@
-FROM loopbackkr/python
+FROM loopbackkr/python:3.9.16
+WORKDIR /workspace
 
-COPY requirements.txt ${PWD}
-RUN pip install --no-cache-dir -r requirements.txt &&\
-    rm requirements.txt
+RUN apt update &&\
+    apt install -y\
+        zip
 
-# Copy sources
-COPY isles ${PWD}/isles
-COPY *.py ${PWD}/
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY isles isles
+COPY *.py .
