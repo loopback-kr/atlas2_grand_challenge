@@ -13,6 +13,7 @@ services:
       - ${PWD}/../nnUNet_forked:/nnUNet_forked
     environment:
       - CHECK_CRC=False
+    command: bash
   
   bids:
     build:

@@ -1,4 +1,4 @@
-FROM loopbackkr/python:3.9.16
+FROM loopbackkr/python:3.9
 WORKDIR /workspace
 
 RUN apt update &&\
